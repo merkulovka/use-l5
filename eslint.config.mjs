@@ -3,18 +3,18 @@ import { createConfigForNuxt } from '@nuxt/eslint-config/flat'
 
 // Run `npx @eslint/config-inspector` to inspect the resolved config interactively
 export default createConfigForNuxt({
-  features: {
+    features: {
     // Rules for module authors
-    tooling: true,
-    // Rules for formatting
-    stylistic: true,
-  },
-  dirs: {
-    src: [
-      './playground',
-    ],
-  },
+        tooling: true,
+        // Rules for formatting
+        stylistic: {
+            commaDangle: 'never',
+            indent: 4
+        }
+    },
+    dirs: {
+        src: ['./playground']
+    }
+}).overrideRules({
+    'vue/multi-word-component-names': 'off'
 })
-  .append(
-    // your custom flat config here...
-  )

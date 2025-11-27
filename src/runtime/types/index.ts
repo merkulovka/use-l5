@@ -26,6 +26,8 @@ export type InferFromL5Schema<S extends SchemaDefinition> = {
 export interface Options<S extends SchemaDefinition> {
     defaults?: Partial<InferFromL5Schema<S>>
     syncWithRoute?: boolean
+    excludeFromSearch?: (keyof S)[]
+    apiIncludes?: string[]
 }
 
 export type Filters<S extends SchemaDefinition> = InferL5<S>

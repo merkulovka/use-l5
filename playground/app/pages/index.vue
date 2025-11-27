@@ -23,6 +23,11 @@ const {filters, queryForApi} = useL5({
     defaults: {
         family_name: 'Merkulov',
         days_of_week: [6, 4, 87, 1]
-    }
+    },
+    excludeFromSearch: ['days_of_week'],
+    apiIncludes: [
+        'user.employees',
+        'user.workplace'
+    ]
 })
 </script>

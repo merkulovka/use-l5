@@ -28,6 +28,7 @@ export interface Options<S extends SchemaDefinition> {
     syncWithRoute?: boolean
     excludeFromSearch?: (keyof S)[]
     apiIncludes?: string[]
+    excludeFromQueryBuilder?: (keyof S)[]
 }
 
 export type Filters<S extends SchemaDefinition> = InferL5<S>

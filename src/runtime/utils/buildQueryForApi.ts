@@ -8,7 +8,7 @@ const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 export function buildQueryForApi<S extends SchemaDefinition>(filters: Filters<S>, options: Options<S>) {
     const result: Record<string, unknown> = {}
 
-    const { excludeFromSearch = [], apiIncludes = [] } = options
+    const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder= [] } = options
     BASE_PARAMS_KEYS.forEach((key) => {
         result[key] = filters[key]
     })
@@ -19,6 +19,7 @@ export function buildQueryForApi<S extends SchemaDefinition>(filters: Filters<S>
         .filter(([key, value]) => {
             if (BASE_PARAMS_KEYS.includes(key)) return false
             if (excludeFromSearch.includes(key)) return false
+            if (excludeFromQueryBuilder.includes(key)) return false
             if (Array.isArray(value)) {
                 return value.length > 0
             }

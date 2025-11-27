@@ -1,7 +1,7 @@
 <template>
     <main>
         <pre>
-<!--            {{filters}}-->
+<!--            {{filters}} -->
         </pre>
         <pre>
             {{ queryForApi }}
@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-const {filters, queryForApi} = useL5({
+const { filters, queryForApi } = useL5({
     name: String,
     age: Number,
     family_name: String,
@@ -25,6 +25,7 @@ const {filters, queryForApi} = useL5({
         days_of_week: [6, 4, 87, 1]
     },
     excludeFromSearch: ['days_of_week'],
+    excludeFromQueryBuilder: ['name'],
     apiIncludes: [
         'user.employees',
         'user.workplace'

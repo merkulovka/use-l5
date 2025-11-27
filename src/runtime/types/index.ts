@@ -29,3 +29,13 @@ export interface Options<S extends SchemaDefinition> {
 }
 
 export type Filters<S extends SchemaDefinition> = InferL5<S>
+
+export interface BaseParams {
+    page: number
+    limit: number
+    sortedBy: string
+    orderBy: string
+    searchJoin: string
+    searchFields: string
+    search: string
+}

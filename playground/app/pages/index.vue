@@ -1,13 +1,16 @@
 <template>
     <main>
         <pre>
-            {{ l5 }}
+            {{filters}}
+        </pre>
+        <pre>
+            {{ queryForApi }}
         </pre>
     </main>
 </template>
 
 <script setup lang="ts">
-const l5 = useL5({
+const {filters, queryForApi} = useL5({
     name: String,
     age: Number,
     family_name: String,

@@ -1,7 +1,7 @@
 <template>
     <main>
         <pre>
-            {{filters}}
+<!--            {{filters}}-->
         </pre>
         <pre>
             {{ queryForApi }}

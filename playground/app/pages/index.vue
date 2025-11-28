@@ -26,6 +26,10 @@ const { filters, queryForApi } = useL5({
     },
     excludeFromSearch: ['days_of_week'],
     excludeFromQueryBuilder: ['name'],
+    queryAliases: {
+        category_id: 'categories',
+        days_of_week: 'daysOfWeek'
+    },
     apiIncludes: [
         'user.employees',
         'user.workplace'

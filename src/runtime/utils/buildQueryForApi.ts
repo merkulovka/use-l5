@@ -8,13 +8,17 @@ const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 export function buildQueryForApi<S extends SchemaDefinition>(filters: Filters<S>, options: Options<S>) {
     const result: Record<string, unknown> = {}
 
-    const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder= [] } = options
+    const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder = [], queryAliases } = options
+
     BASE_PARAMS_KEYS.forEach((key) => {
         result[key] = filters[key]
     })
+
     excludeFromSearch.forEach((key) => {
-        result[key as string] = filters[key]
+        const alias = queryAliases?.[key] ?? key
+        result[alias as string] = filters[key]
     })
+
     result.search = Object.entries(filters)
         .filter(([key, value]) => {
             if (BASE_PARAMS_KEYS.includes(key)) return false
@@ -26,7 +30,8 @@ export function buildQueryForApi<S extends SchemaDefinition>(filters: Filters<S>
             return value !== null
         })
         .map(([key, value]) => {
-            return `${key}:${Array.isArray(value) ? value.join(',') : value}`
+            const alias = queryAliases?.[key] ?? key
+            return `${alias}:${Array.isArray(value) ? value.join(',') : value}`
         })
         .join(';')
 

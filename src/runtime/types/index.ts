@@ -29,6 +29,7 @@ export interface Options<S extends SchemaDefinition> {
     excludeFromSearch?: (keyof S)[]
     apiIncludes?: string[]
     excludeFromQueryBuilder?: (keyof S)[]
+    queryAliases?: Partial<Record<keyof S, string>>
 }
 
 export type Filters<S extends SchemaDefinition> = InferL5<S>

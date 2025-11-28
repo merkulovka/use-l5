@@ -1,5 +1,9 @@
 <template>
     <main>
+        <input
+            v-model="isChecked"
+            type="checkbox"
+        >
         <pre>
             {{ filters }}
         </pre>
@@ -10,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-const { filters, queryForApi } = useL5({
+const { filters, queryForApi, updateFilters } = useL5({
     sorted: String
 }, {
     syncWithRoute: true,
@@ -22,6 +26,21 @@ const { filters, queryForApi } = useL5({
             orderBy: isPrice ? 'desc' : 'asc',
             sortedBy: isPrice ? 'price' : 'id'
         }
+    }
+})
+
+const isChecked = ref<boolean>(false)
+
+watch(isChecked, (val: boolean) => {
+    if (val) {
+        updateFilters({
+            sorted: 'price'
+        })
+    }
+    else {
+        updateFilters({
+            sorted: null
+        })
     }
 })
 </script>

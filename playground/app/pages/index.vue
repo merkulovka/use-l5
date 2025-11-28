@@ -1,5 +1,11 @@
 <template>
     <main>
+        <button
+            type="button"
+            @click="update"
+        >
+            updateFilters
+        </button>
         <pre>
             {{ filters }}
         </pre>
@@ -10,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-const { filters, queryForApi } = useL5({
+const { filters, queryForApi, updateFilters } = useL5({
     name: String,
     age: Number,
     some_key_for_transform: Boolean,
@@ -42,4 +48,12 @@ const { filters, queryForApi } = useL5({
         }
     }
 })
+
+function update() {
+    updateFilters({
+        category_id: [1, 2, 3, 4, 5, 6, 7, 8],
+        name: 'Username',
+        is_active: true
+    })
+}
 </script>

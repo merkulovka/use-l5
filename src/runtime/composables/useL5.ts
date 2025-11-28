@@ -28,7 +28,7 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
             filters.value[key] = newFilters[key]
         }
 
-        queryForApi.value = buildQueryForApi(filters.value, newFilters)
+        queryForApi.value = buildQueryForApi(filters.value, options)
 
         if (!options.syncWithRoute) return
 

@@ -51,7 +51,7 @@ const { filters, queryForApi, updateFilters } = useL5({
 
 function update() {
     updateFilters({
-        category_id: [1, 2, 3, 4, 5, 6, 7, 8],
+        days_of_week: [1, 2, 3, 4, 5, 6, 7, 8],
         name: 'Username',
         is_active: true
     })

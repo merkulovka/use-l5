@@ -9,8 +9,8 @@ export type L5Node
         | { [k: string]: L5Node }
 
 export type InferL5<T>
-    = T extends StringConstructor ? string
-        : T extends NumberConstructor ? number
+    = T extends StringConstructor ? string | null
+        : T extends NumberConstructor ? number | null
             : T extends BooleanConstructor ? boolean
                 : T extends DateConstructor ? Date
                     : T extends [infer U] ? InferL5<U>[]

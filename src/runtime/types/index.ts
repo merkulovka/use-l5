@@ -23,6 +23,8 @@ export type InferFromL5Schema<S extends SchemaDefinition> = {
     [K in keyof S]: InferL5<S[K]>;
 }
 
+export type Filters<S extends SchemaDefinition> = InferL5<S>
+
 export interface Options<S extends SchemaDefinition> {
     defaults?: Partial<InferFromL5Schema<S>>
     syncWithRoute?: boolean
@@ -30,9 +32,9 @@ export interface Options<S extends SchemaDefinition> {
     apiIncludes?: string[]
     excludeFromQueryBuilder?: (keyof S)[]
     queryAliases?: Partial<Record<keyof S, string>>
+    transformInput?: (query: Partial<S>) => Partial<S>
+    transformOutput?: (filters: Filters<S>) => Record<keyof S & keyof BaseParams, unknown>
 }
-
-export type Filters<S extends SchemaDefinition> = InferL5<S>
 
 export interface BaseParams {
     page: number

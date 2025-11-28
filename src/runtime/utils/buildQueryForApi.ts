@@ -5,18 +5,21 @@ import { BASE_PARAMS_DEFAULTS } from '../constant/baseParams.const'
 
 const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 
-export function buildQueryForApi<S extends SchemaDefinition>(filters: Filters<S>, options: Options<S>) {
+export function buildQueryForApi<S extends SchemaDefinition>(_filters: Filters<S>, options: Options<S>) {
     const result: Record<string, unknown> = {}
+    let filters: Record<string, unknown> = _filters
+    const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder = [], queryAliases, transformOutput } = options
 
-    const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder = [], queryAliases } = options
-
+    if (transformOutput) {
+        filters = transformOutput(_filters)
+    }
     BASE_PARAMS_KEYS.forEach((key) => {
         result[key] = filters[key]
     })
 
     excludeFromSearch.forEach((key) => {
         const alias = queryAliases?.[key] ?? key
-        result[alias as string] = filters[key]
+        result[alias as string] = filters[key as string]
     })
 
     result.search = Object.entries(filters)

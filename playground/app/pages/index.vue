@@ -6,12 +6,15 @@
         >
             updateFilters
         </button>
-        <pre>
+
+        <div style="display: flex">
+            <pre>
             {{ filters }}
         </pre>
-        <pre>
+            <pre>
             {{ queryForApi }}
         </pre>
+        </div>
     </main>
 </template>
 

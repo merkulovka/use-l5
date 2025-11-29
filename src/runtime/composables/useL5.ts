@@ -1,4 +1,4 @@
-import { shallowReactive, shallowRef, useRoute, useRouter } from '#imports'
+import { shallowReactive, shallowRef, useRoute, useRouter, watch } from '#imports'
 import type { InferL5, Options, SchemaDefinition } from '../types'
 import { parseFiltersFromQuery } from '../utils/parseFiltersFromQuery'
 import { buildQueryForApi } from '../utils/buildQueryForApi'
@@ -9,11 +9,10 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
     const router = useRouter()
     const {
         defaults = {},
-        urlUpdateStrategy = 'push'
+        syncWithRoute = false,
+        urlUpdateStrategy = 'push',
     } = options
-    const {
-        syncWithRoute = false
-    } = options
+
     const query = syncWithRoute ? route.query : {}
 
     const filters = shallowRef(parseFiltersFromQuery(scheme, query, {
@@ -28,9 +27,10 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
             filters.value[key] = newFilters[key]
         }
 
-        queryForApi.value = buildQueryForApi(filters.value, options)
-
-        if (!options.syncWithRoute) return
+        if (!syncWithRoute) {
+            queryForApi.value = buildQueryForApi(filters.value, options)
+            return
+        }
 
         const query = buildQueryForUrl(filters.value, options)
 
@@ -40,6 +40,19 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
         method.call(router, { query })
     }
 
+    function startWatchingForRoute() {
+        watch(() => route.query, (newQuery) => {
+            filters.value = parseFiltersFromQuery(scheme, newQuery, {
+                defaults
+            })
+
+            queryForApi.value = buildQueryForApi(filters.value, options)
+        })
+    }
+
+    if (syncWithRoute) {
+        startWatchingForRoute()
+    }
     return {
         filters,
         queryForApi,

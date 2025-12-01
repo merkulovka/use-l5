@@ -1,6 +1,4 @@
-import type { Filters, Primitive, SchemaDefinition, Options, BaseParams } from '../types'
-import type { LocationQuery, LocationQueryValue } from 'vue-router'
-import { parseValueFromQuery } from './parseValueFromQuery'
+import type { Filters, SchemaDefinition, Options } from '../types'
 import { BASE_PARAMS_DEFAULTS } from '../constant/baseParams.const'
 
 const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)

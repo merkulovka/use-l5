@@ -1,5 +1,5 @@
-import { shallowReactive, shallowRef, useRoute, useRouter, watch } from '#imports'
-import type { InferL5, Options, SchemaDefinition } from '../types'
+import { shallowRef, toRef, useRoute, useRouter, watch } from '#imports'
+import type { InferFromL5Schema, InferL5, Options, SchemaDefinition } from '../types'
 import { parseFiltersFromQuery } from '../utils/parseFiltersFromQuery'
 import { buildQueryForApi } from '../utils/buildQueryForApi'
 import { buildQueryForUrl } from '../utils/buildQueryForUrl'
@@ -8,15 +8,15 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
     const route = useRoute()
     const router = useRouter()
     const {
-        defaults = {},
         syncWithRoute = false,
-        urlUpdateStrategy = 'push',
+        urlUpdateStrategy = 'push'
     } = options
 
+    const defaultsRef = toRef(options.defaults ?? {})
     const query = syncWithRoute ? route.query : {}
 
     const filters = shallowRef(parseFiltersFromQuery(scheme, query, {
-        defaults
+        defaults: defaultsRef.value
     }))
 
     const queryForApi = shallowRef(buildQueryForApi(filters.value, options))
@@ -28,11 +28,11 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
         }
 
         if (!syncWithRoute) {
-            queryForApi.value = buildQueryForApi(filters.value, options)
+            queryForApi.value = buildQueryForApi(filters.value, { ...options, defaults: defaultsRef.value })
             return
         }
 
-        const query = buildQueryForUrl(filters.value, options)
+        const query = buildQueryForUrl(filters.value, { ...options, defaults: defaultsRef.value })
 
         const method = localUrlUpdateStrategy === 'replace'
             ? router.replace
@@ -40,10 +40,17 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
         method.call(router, { query })
     }
 
+    function updateDefaults(newDefaults: Partial<InferFromL5Schema<S>>) {
+        defaultsRef.value = {
+            ...defaultsRef.value,
+            ...newDefaults
+        }
+    }
+
     function startWatchingForRoute() {
         watch(() => route.query, (newQuery) => {
             filters.value = parseFiltersFromQuery(scheme, newQuery, {
-                defaults
+                defaults: defaultsRef.value
             })
 
             queryForApi.value = buildQueryForApi(filters.value, options)
@@ -56,6 +63,8 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
     return {
         filters,
         queryForApi,
-        updateFilters
+        updateFilters,
+        updateDefaults,
+        defaultsRef
     }
 }

@@ -30,6 +30,5 @@ export function parseValueFromQuery(value: LocationQueryValue | LocationQueryVal
             if (!value) return null
             return ['1', 'true'].includes(value.toString())
         default:
-            console.log(`Пропущен: ${node}`)
     }
 }

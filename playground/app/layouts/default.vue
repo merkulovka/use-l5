@@ -7,9 +7,19 @@
             <NuxtLink to="/transform">
                 Трансформеры
             </NuxtLink>
+            <NuxtLink to="/update-defaults">
+                Update defaults
+            </NuxtLink>
         </header>
         <slot />
     </div>
 </template>
 
 <script setup lang="ts"></script>
+
+<style>
+header {
+    display: flex;
+    gap: 1rem;
+}
+</style>

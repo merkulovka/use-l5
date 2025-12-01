@@ -22,12 +22,16 @@ export function parseValueFromQuery(value: LocationQueryValue | LocationQueryVal
             return String(value)
         case Number:
             if (isArray) {
-                return asArray(value).map(i => Number(i))
+                return asArray(value).map((i) => {
+                    i = Number(i)
+                    return Number.isNaN(i) ? null : i
+                }).filter(i => i)
             }
             if (!value) return null
-            return Number(value)
+            value = Number(value)
+            return Number.isNaN(value) ? null : value
         case Boolean:
-            if (!value) return null
+            if (!value) return false
             return ['1', 'true'].includes(value.toString())
         default:
     }

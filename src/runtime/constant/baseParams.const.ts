@@ -6,8 +6,8 @@ export const BASE_PARAMS_DEFAULTS: BaseParams = {
     sortedBy: 'id',
     orderBy: 'desc',
     searchJoin: 'and',
-    searchFields: '',
-    search: ''
+    searchFields: null,
+    search: null
 }
 
 export const BASE_PARAMS_DEFAULTS_TYPE_MAP: Record<keyof BaseParams, L5Node> = {

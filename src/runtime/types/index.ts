@@ -43,6 +43,6 @@ export interface BaseParams {
     sortedBy: string
     orderBy: string
     searchJoin: string
-    searchFields: string
-    search: string
+    searchFields: string | null
+    search: string | null
 }

@@ -1,19 +1,17 @@
 import type { Filters, SchemaDefinition, Options } from '../types'
 import { BASE_PARAMS_DEFAULTS } from '../constant/baseParams.const'
+import {pick} from "es-toolkit";
 
 const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 
 export function buildQueryForApi<S extends SchemaDefinition>(_filters: Filters<S>, options: Options<S>) {
-    const result: Record<string, unknown> = {}
     let filters: Record<string, unknown> = _filters
+    const result: Record<string, unknown> = pick(filters, BASE_PARAMS_KEYS)
     const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder = [], queryAliases, transformOutput } = options
 
     if (transformOutput) {
         filters = transformOutput(_filters)
     }
-    BASE_PARAMS_KEYS.forEach((key) => {
-        result[key] = filters[key]
-    })
 
     excludeFromSearch.forEach((key) => {
         const alias = queryAliases?.[key] ?? key

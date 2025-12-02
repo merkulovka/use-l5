@@ -42,4 +42,19 @@ describe('buildQueryForUrl', () => {
             tags: ['nuxt', 'dev']
         })
     })
+
+    it('Не добавляет массив, совпадающий с дефолтом, даже если порядок отличается', () => {
+        const query = buildQueryForUrl(filters, {
+            defaults: {
+                tags: ['dev', 'nuxt']
+            }
+        })
+
+        expect(query).toEqual({
+            page: 2,
+            age: 18,
+            name: 'User',
+            is_active: true
+        })
+    })
 })

@@ -4,12 +4,18 @@ import type { SchemaDefinition } from '../src/runtime/types'
 import { useL5 } from '../src/runtime/composables/useL5'
 
 let mockRouteQuery: LocationQuery = {}
+const routerPush = vi.fn()
+const routerReplace = vi.fn()
 
 vi.mock('#imports', async () => {
     const vue = await vi.importActual<typeof import('vue')>('vue')
     return {
         ...vue,
-        useRoute: () => ({ query: mockRouteQuery })
+        useRoute: () => ({ query: mockRouteQuery }),
+        useRouter: () => ({
+            push: routerPush,
+            replace: routerReplace
+        })
     }
 })
 
@@ -45,9 +51,11 @@ function setRouteFrom(url: string) {
 describe('useL5', () => {
     beforeEach(() => {
         mockRouteQuery = {}
+        routerPush.mockReset()
+        routerReplace.mockReset()
     })
-
-    it('returns defaults when query is empty and builds search/excluded fields correctly', () => {
+    //
+    it('возвращает значения по умолчанию при пустом query и правильно строит поля поиска/исключения', () => {
         setRouteFrom('https://example.com/users')
 
         const { filters, queryForApi } = useL5(schema, {
@@ -59,7 +67,7 @@ describe('useL5', () => {
             excludeFromSearch: ['status']
         })
 
-        expect(filters).toEqual({
+        expect(filters.value).toEqual({
             status: true,
             tags: ['nuxt'],
             age: null,
@@ -72,7 +80,7 @@ describe('useL5', () => {
             search: null
         })
 
-        expect(queryForApi).toEqual({
+        expect(queryForApi.value).toEqual({
             page: 1,
             limit: 10,
             sortedBy: 'id',
@@ -84,7 +92,7 @@ describe('useL5', () => {
         })
     })
 
-    it('parses query parameters from a provided url and builds queryForApi', () => {
+    it('парсит параметры query из переданного url и строит queryForApi', () => {
         setRouteFrom(
             'https://example.com/users?page=2&limit=5&sortedBy=created_at&orderBy=asc&searchJoin=or&searchFields=name:title&status=0&tags=tech&tags=ai&age=42'
         )
@@ -98,7 +106,7 @@ describe('useL5', () => {
             apiIncludes: ['author', 'comments']
         })
 
-        expect(filters).toEqual({
+        expect(filters.value).toEqual({
             status: false,
             tags: ['tech', 'ai'],
             age: 42,
@@ -111,7 +119,7 @@ describe('useL5', () => {
             search: null
         })
 
-        expect(queryForApi).toEqual({
+        expect(queryForApi.value).toEqual({
             page: 2,
             limit: 5,
             sortedBy: 'created_at',
@@ -121,6 +129,53 @@ describe('useL5', () => {
             search: 'tags:tech,ai;age:42',
             status: false,
             include: 'author,comments'
+        })
+    })
+
+    it('updateFilters обновляет filters/queryForApi и синхронизирует маршрут при включении', () => {
+        setRouteFrom('https://example.com/users')
+
+        const { filters, queryForApi, updateFilters } = useL5(schema, {
+            defaults: {
+                status: false,
+                tags: ['nuxt']
+            },
+            excludeFromSearch: ['status']
+        })
+
+        updateFilters({
+            status: true,
+            tags: ['nuxt', 'ai'],
+            age: 30,
+            page: 3,
+            sortedBy: 'created_at',
+            orderBy: 'asc',
+            searchJoin: 'or',
+            searchFields: 'name:title'
+        })
+
+        expect(filters.value).toEqual({
+            status: true,
+            tags: ['nuxt', 'ai'],
+            age: 30,
+            page: 3,
+            limit: 10,
+            sortedBy: 'created_at',
+            orderBy: 'asc',
+            searchJoin: 'or',
+            searchFields: 'name:title',
+            search: null
+        })
+
+        expect(queryForApi.value).toEqual({
+            page: 3,
+            limit: 10,
+            sortedBy: 'created_at',
+            orderBy: 'asc',
+            searchJoin: 'or',
+            searchFields: 'name:title',
+            search: 'tags:nuxt,ai;age:30',
+            status: true
         })
     })
 })

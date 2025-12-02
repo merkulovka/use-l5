@@ -24,6 +24,7 @@ describe('buildQueryForUrl', () => {
             age: 18,
             name: 'User',
             is_active: true,
+            status: false,
             tags: ['nuxt', 'dev']
         })
     })
@@ -39,6 +40,7 @@ describe('buildQueryForUrl', () => {
         expect(query).toEqual({
             page: 2,
             name: 'User',
+            status: false,
             tags: ['nuxt', 'dev']
         })
     })
@@ -54,7 +56,27 @@ describe('buildQueryForUrl', () => {
             page: 2,
             age: 18,
             name: 'User',
-            is_active: true
+            is_active: true,
+            status: false
+        })
+    })
+
+    it('Сохраняет числовой 0 и false значения', () => {
+        const query = buildQueryForUrl({
+            ...filters,
+            attempts: 0
+        }, {
+            defaults: {}
+        })
+
+        expect(query).toEqual({
+            page: 2,
+            age: 18,
+            name: 'User',
+            is_active: true,
+            status: false,
+            tags: ['nuxt', 'dev'],
+            attempts: 0
         })
     })
 })

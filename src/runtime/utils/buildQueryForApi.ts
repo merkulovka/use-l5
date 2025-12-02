@@ -1,6 +1,6 @@
 import type { Filters, SchemaDefinition, Options } from '../types'
 import { BASE_PARAMS_DEFAULTS } from '../constant/baseParams.const'
-import {pick} from "es-toolkit";
+import { pick } from 'es-toolkit'
 
 const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 

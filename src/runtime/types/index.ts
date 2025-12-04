@@ -4,7 +4,6 @@ export type L5Node
     = | StringConstructor
         | NumberConstructor
         | BooleanConstructor
-        | DateConstructor
         | [L5Node]
         | { [k: string]: L5Node }
 
@@ -12,10 +11,9 @@ export type InferL5<T>
     = T extends StringConstructor ? string | null
         : T extends NumberConstructor ? number | null
             : T extends BooleanConstructor ? boolean
-                : T extends DateConstructor ? Date
-                    : T extends [infer U] ? InferL5<U>[]
-                        : T extends Record<string, unknown> ? { [K in keyof T]: InferL5<T[K]> }
-                            : never
+                : T extends [infer U] ? InferL5<U>[]
+                    : T extends Record<string, unknown> ? { [K in keyof T]: InferL5<T[K]> }
+                        : never
 
 export type SchemaDefinition = Record<string, L5Node>
 

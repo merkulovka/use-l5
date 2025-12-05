@@ -1,9 +1,17 @@
 <template>
     <main>
-        <input
-            v-model="isChecked"
-            type="checkbox"
+        <select
+            v-model="filters.sorted"
+            @update:model-value="update"
         >
+            <option
+                v-for="option in optionsSelect"
+                :key="option.name"
+                :value="option.value"
+            >
+                {{ option.name }}
+            </option>
+        </select>
         <pre>
             {{ filters }}
         </pre>
@@ -14,33 +22,66 @@
 </template>
 
 <script setup lang="ts">
+const optionsSelect = [
+    {
+        name: 'Популярные',
+        value: 'popular'
+    },
+    {
+        name: 'Дешевле',
+        value: 'cheap'
+    },
+    {
+        name: 'Дороже',
+        value: 'expensive'
+    },
+    {
+        name: 'С высоким рейтингом',
+        value: 'rating'
+    }
+]
+
+const valuesSelect = {
+    popular: {
+        orderBy: '',
+        sortedBy: ''
+    },
+    cheap: {
+        orderBy: 'total_price',
+        sortedBy: 'asc'
+    },
+    expensive: {
+        orderBy: 'total_price',
+        sortedBy: 'desc'
+    },
+    rating: {
+        orderBy: 'rating',
+        sortedBy: 'desc'
+    }
+}
+
 const { filters, queryForApi, updateFilters } = useL5({
     sorted: String
 }, {
     syncWithRoute: true,
     excludeFromQueryBuilder: ['sorted'],
+    defaults: {
+        sorted: 'popular'
+    },
     transformOutput: (_filters) => {
-        const isPrice = _filters.sorted === 'price'
+        const { orderBy, sortedBy } = valuesSelect[_filters.sorted]
         return {
             ..._filters,
-            orderBy: isPrice ? 'desc' : 'asc',
-            sortedBy: isPrice ? 'price' : 'id'
+            test: _filters.sorted,
+            orderBy,
+            sortedBy
         }
     }
 })
 
-const isChecked = ref<boolean>(false)
-
-watch(isChecked, (val: boolean) => {
-    if (val) {
-        updateFilters({
-            sorted: 'price'
-        })
-    }
-    else {
-        updateFilters({
-            sorted: null
-        })
-    }
-})
+function update() {
+    updateFilters({
+        ...filters.value
+    })
+}
 </script>

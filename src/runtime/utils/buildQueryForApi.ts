@@ -13,7 +13,7 @@ export function buildQueryForApi<S extends SchemaDefinition>(_filters: Filters<S
         filters = transformOutput(_filters)
     }
 
-    excludeFromSearch.forEach((key) => {
+    [...BASE_PARAMS_KEYS, ...excludeFromSearch].forEach((key) => {
         const alias = queryAliases?.[key] ?? key
         result[alias as string] = filters[key as string]
     })

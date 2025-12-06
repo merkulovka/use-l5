@@ -23,6 +23,11 @@ export function useL5<S extends SchemaDefinition>(scheme: S, options: Options<S>
 
     function updateFilters(newFilters: Partial<InferL5<S>>, _options: Partial<Pick<Options<S>, 'urlUpdateStrategy'>> = {}) {
         const { urlUpdateStrategy: localUrlUpdateStrategy = urlUpdateStrategy } = _options
+
+        if (options.resetPaginationWhenUpdate) {
+            filters.value.page = 1
+        }
+
         for (const key in newFilters) {
             filters.value[key] = newFilters[key]
         }

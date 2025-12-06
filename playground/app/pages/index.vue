@@ -30,6 +30,7 @@ const { filters, queryForApi, updateFilters } = useL5({
     is_active: Boolean
 }, {
     syncWithRoute: true,
+    resetPaginationWhenUpdate: true,
     defaults: {
         family_name: 'Merkulov',
         days_of_week: [6, 4, 87, 1]

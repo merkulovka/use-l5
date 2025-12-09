@@ -5,7 +5,7 @@ import { pick } from 'es-toolkit'
 const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 
 export function buildQueryForApi<S extends SchemaDefinition>(_filters: Filters<S>, options: Options<S>) {
-    let filters: Record<string, unknown> = _filters
+    let filters: Record<string, unknown> = { ..._filters }
     const result: Record<string, unknown> = pick(filters, BASE_PARAMS_KEYS)
     const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder = [], queryAliases, transformOutput } = options
 
@@ -13,7 +13,17 @@ export function buildQueryForApi<S extends SchemaDefinition>(_filters: Filters<S
         filters = transformOutput(_filters)
     }
 
-    [...BASE_PARAMS_KEYS, ...excludeFromSearch].forEach((key) => {
+    const allExcludeKeys = [...BASE_PARAMS_KEYS, ...excludeFromSearch]
+
+    if (options.boolToNumber) {
+        Object.entries(filters).forEach(([key, value]) => {
+            if (typeof value === 'boolean') {
+                filters[key] = Number(value)
+            }
+        })
+    }
+
+    allExcludeKeys.forEach((key) => {
         const alias = queryAliases?.[key] ?? key
         result[alias as string] = filters[key as string]
     })

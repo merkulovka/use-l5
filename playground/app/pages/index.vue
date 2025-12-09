@@ -30,6 +30,7 @@ const { filters, queryForApi, updateFilters } = useL5({
     is_active: Boolean
 }, {
     syncWithRoute: true,
+    boolToNumber: true,
     resetPaginationWhenUpdate: true,
     defaults: {
         family_name: 'Merkulov',
@@ -44,20 +45,13 @@ const { filters, queryForApi, updateFilters } = useL5({
     apiIncludes: [
         'user.employees',
         'user.workplace'
-    ],
-    transformOutput: (_filters) => {
-        return {
-            ..._filters,
-            some_key_for_transform: _filters.some_key_for_transform ? 'yes' : 'no'
-        }
-    }
+    ]
 })
 
 function update() {
     updateFilters({
-        days_of_week: [1, 2, 3, 4, 5, 6, 7, 8],
-        name: 'Username',
-        is_active: true
+        is_active: true,
+        some_key_for_transform: true
     })
 }
 </script>

@@ -1,4 +1,9 @@
-import { defineNuxtModule, addImportsDir, createResolver } from '@nuxt/kit'
+import {
+    defineNuxtModule,
+    addImportsDir,
+    createResolver,
+    addImports
+} from '@nuxt/kit'
 
 // Module options TypeScript interface definition
 export interface ModuleOptions {
@@ -19,5 +24,16 @@ export default defineNuxtModule<ModuleOptions>({
         const resolver = createResolver(import.meta.url)
 
         addImportsDir(resolver.resolve('./runtime/composables'))
+
+        addImports({
+            name: 'buildQueryForApi',
+            as: 'buildQueryForApi',
+            from: resolver.resolve('./runtime/utils/buildQueryForApi')
+        })
+        addImports({
+            name: 'parseFiltersFromQuery',
+            as: 'parseFiltersFromQuery',
+            from: resolver.resolve('./runtime/utils/parseFiltersFromQuery')
+        })
     }
 })

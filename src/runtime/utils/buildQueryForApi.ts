@@ -4,10 +4,19 @@ import { pick } from 'es-toolkit'
 
 const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 
-export function buildQueryForApi<S extends SchemaDefinition>(_filters: Filters<S>, options: Options<S>) {
+export function buildQueryForApi<S extends SchemaDefinition>(
+    _filters: Filters<S>,
+    options: Options<S>
+) {
     let filters: Record<string, unknown> = { ..._filters }
     const result: Record<string, unknown> = pick(filters, BASE_PARAMS_KEYS)
-    const { excludeFromSearch = [], apiIncludes = [], excludeFromQueryBuilder = [], queryAliases, transformOutput } = options
+    const {
+        excludeFromSearch = [],
+        apiIncludes = [],
+        excludeFromQueryBuilder = [],
+        queryAliases,
+        transformOutput
+    } = options
 
     if (transformOutput) {
         filters = transformOutput(_filters)

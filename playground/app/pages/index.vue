@@ -32,6 +32,13 @@
                 {{ queryForApi }}
            </code>
         </pre>
+        <button
+            v-for="page in 5"
+            :key="page"
+            @click="handlePageClick(page)"
+        >
+            Page: {{ page }}
+        </button>
     </main>
 </template>
 
@@ -52,5 +59,11 @@ const { filters, queryForApi, updateFilters } = useL5(
 
 const handleSubmit = () => {
     updateFilters({ ...filters.value })
+}
+
+const handlePageClick = (page: number) => {
+    updateFilters({
+        page
+    })
 }
 </script>

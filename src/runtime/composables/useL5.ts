@@ -8,8 +8,8 @@ import {
     useRuntimeConfig
 } from '#imports'
 import type {
+    Filters,
     InferFromL5Schema,
-    InferL5,
     Options,
     SchemaDefinition
 } from '../types'
@@ -43,16 +43,12 @@ export function useL5<S extends SchemaDefinition>(
     const queryForApi = shallowRef(buildQueryForApi(filters.value, options))
 
     function updateFilters(
-        newFilters: Partial<InferL5<S>>,
+        newFilters: Partial<Filters<S>>,
         _options: Partial<Pick<Options<S>, 'urlUpdateStrategy'>> = {}
     ) {
         const {
             urlUpdateStrategy: localUrlUpdateStrategy = urlUpdateStrategy
         } = _options
-
-        if (options.resetPaginationWhenUpdate) {
-            filters.value.page = 1
-        }
 
         for (const key in newFilters) {
             filters.value[key] = newFilters[key]

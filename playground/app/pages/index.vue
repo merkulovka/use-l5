@@ -43,7 +43,6 @@ const { filters, queryForApi, updateFilters } = useL5(
         skills: [String]
     },
     {
-        syncWithRoute: true,
         defaults: {
             age: 25,
             skills: ['html', 'css']

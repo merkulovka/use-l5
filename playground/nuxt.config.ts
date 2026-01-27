@@ -2,5 +2,7 @@ export default defineNuxtConfig({
     modules: ['../src/module'],
     devtools: { enabled: true },
     css: ['~/assets/css/main.css'],
-    useL5: {}
+    useL5: {
+        syncWithRoute: true
+    }
 })

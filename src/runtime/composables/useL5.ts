@@ -1,4 +1,12 @@
-import { shallowRef, ref, toRef, useRoute, useRouter, watch } from '#imports'
+import {
+    shallowRef,
+    ref,
+    toRef,
+    useRoute,
+    useRouter,
+    watch,
+    useRuntimeConfig
+} from '#imports'
 import type {
     InferFromL5Schema,
     InferL5,
@@ -13,9 +21,15 @@ export function useL5<S extends SchemaDefinition>(
     scheme: S,
     options: Options<S> = {}
 ) {
+    const config = useRuntimeConfig()
+    const moduleOptions = (config.public?.useL5 ?? {}) as Partial<Options<S>>
+
     const route = useRoute()
     const router = useRouter()
-    const { syncWithRoute = false, urlUpdateStrategy = 'push' } = options
+
+    const mergedOptions: Options<S> = { ...moduleOptions, ...options }
+
+    const { syncWithRoute = false, urlUpdateStrategy = 'push' } = mergedOptions
 
     const defaultsRef = toRef(options.defaults ?? {})
     const query = syncWithRoute ? route.query : {}

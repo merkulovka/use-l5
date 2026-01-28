@@ -4,6 +4,9 @@ import type { SchemaDefinition } from '../src/runtime/types'
 import { useL5 } from '../src/runtime/composables/useL5'
 
 let mockRouteQuery: LocationQuery = {}
+let mockRuntimeConfig: { public?: { useL5?: Record<string, unknown> } } = {
+    public: { useL5: {} }
+}
 const routerPush = vi.fn()
 const routerReplace = vi.fn()
 
@@ -15,7 +18,8 @@ vi.mock('#imports', async () => {
         useRouter: () => ({
             push: routerPush,
             replace: routerReplace
-        })
+        }),
+        useRuntimeConfig: () => mockRuntimeConfig
     }
 })
 
@@ -51,6 +55,7 @@ function setRouteFrom(url: string) {
 describe('useL5', () => {
     beforeEach(() => {
         mockRouteQuery = {}
+        mockRuntimeConfig = { public: { useL5: {} } }
         routerPush.mockReset()
         routerReplace.mockReset()
     })

@@ -31,7 +31,7 @@ export function useL5<S extends SchemaDefinition>(
 
     const { syncWithRoute = false, urlUpdateStrategy = 'push' } = mergedOptions
 
-    const defaultsRef = toRef(options.defaults ?? {})
+    const defaultsRef = toRef(mergedOptions.defaults ?? {})
     const query = syncWithRoute ? route.query : {}
 
     const filters = ref(
@@ -40,7 +40,9 @@ export function useL5<S extends SchemaDefinition>(
         })
     )
 
-    const queryForApi = shallowRef(buildQueryForApi(filters.value, options))
+    const queryForApi = shallowRef(
+        buildQueryForApi(filters.value, mergedOptions)
+    )
 
     function updateFilters(
         newFilters: Partial<Filters<S>>,
@@ -55,15 +57,12 @@ export function useL5<S extends SchemaDefinition>(
         }
 
         if (!syncWithRoute) {
-            queryForApi.value = buildQueryForApi(filters.value, {
-                ...options,
-                defaults: defaultsRef.value
-            })
+            queryForApi.value = buildQueryForApi(filters.value, mergedOptions)
             return
         }
 
         const query = buildQueryForUrl(filters.value, {
-            ...options,
+            ...mergedOptions,
             defaults: defaultsRef.value
         })
 
@@ -87,7 +86,10 @@ export function useL5<S extends SchemaDefinition>(
                     defaults: defaultsRef.value
                 })
 
-                queryForApi.value = buildQueryForApi(filters.value, options)
+                queryForApi.value = buildQueryForApi(
+                    filters.value,
+                    mergedOptions
+                )
             }
         )
     }

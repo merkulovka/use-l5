@@ -9,6 +9,7 @@ import {
 export interface ModuleOptions {
     syncWithRoute?: boolean
     urlUpdateStrategy?: 'replace' | 'push'
+    boolToNumber?: boolean
 }
 
 export default defineNuxtModule<ModuleOptions>({

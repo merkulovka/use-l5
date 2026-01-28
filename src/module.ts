@@ -5,6 +5,17 @@ import {
     addImports
 } from '@nuxt/kit'
 
+export type {
+    BaseParams,
+    Filters,
+    InferFromL5Schema,
+    InferL5,
+    L5Node,
+    Options,
+    Primitive,
+    SchemaDefinition
+} from './runtime/types'
+
 // Module options TypeScript interface definition
 export interface ModuleOptions {
     syncWithRoute?: boolean

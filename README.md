@@ -1,84 +1,117 @@
-<!--
-Get your module up and running quickly.
+# use-l5
 
-Find and replace all on all files (CMD+SHIFT+F):
-- Name: My Module
-- Package name: my-module
-- Description: My new Nuxt module
--->
+Nuxt-модуль с типизированным `useL5`-композаблом для парсинга фильтров, синхронизации с query в роуте и сборки параметров для API/URL.
 
-# My Module
+## Возможности
 
-[![npm version][npm-version-src]][npm-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![License][license-src]][license-href]
-[![Nuxt][nuxt-src]][nuxt-href]
+- типизированная схема фильтров на основе конструкторов `String/Number/Boolean`
+- двусторонняя синхронизация с `route.query` (опционально)
+- генерация параметров для API и URL
+- базовые параметры пагинации и сортировки
 
-My new Nuxt module for doing amazing things.
-
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
-<!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/my-module?file=playground%2Fapp.vue) -->
-<!-- - [📖 &nbsp;Documentation](https://example.com) -->
-
-## Features
-
-<!-- Highlight some of the features your module provide here -->
-- ⛰ &nbsp;Foo
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
-
-## Quick Setup
-
-Install the module to your Nuxt application with one command:
+## Установка
 
 ```bash
-npx nuxi module add my-module
+npx nuxi module add use-l5
 ```
 
-That's it! You can now use My Module in your Nuxt app ✨
+или
 
+```bash
+pnpm add use-l5
+```
 
-## Contribution
+## Настройка модуля
 
-<details>
-  <summary>Local development</summary>
-  
-  ```bash
-  # Install dependencies
-  npm install
-  
-  # Generate type stubs
-  npm run dev:prepare
-  
-  # Develop with the playground
-  npm run dev
-  
-  # Build the playground
-  npm run dev:build
-  
-  # Run ESLint
-  npm run lint
-  
-  # Run Vitest
-  npm run test
-  npm run test:watch
-  
-  # Release new version
-  npm run release
-  ```
+`nuxt.config.ts`:
 
-</details>
+```ts
+export default defineNuxtConfig({
+  modules: ['use-l5'],
+  useL5: {
+    syncWithRoute: true,
+    urlUpdateStrategy: 'replace',
+    boolToNumber: true
+  }
+})
+```
 
+## Базовое использование
 
-<!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/my-module/latest.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-version-href]: https://npmjs.com/package/my-module
+```ts
+import { useL5 } from '#imports'
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-downloads-href]: https://npm.chart.dev/my-module
+const schema = {
+  q: String,
+  category: [String],
+  inStock: Boolean,
+  price: Number
+}
 
-[license-src]: https://img.shields.io/npm/l/my-module.svg?style=flat&colorA=020420&colorB=00DC82
-[license-href]: https://npmjs.com/package/my-module
+const { filters, queryForApi, updateFilters, updateDefaults } = useL5(schema, {
+  defaults: {
+    category: [],
+    inStock: false
+  },
+  syncWithRoute: true,
+  urlUpdateStrategy: 'push'
+})
 
-[nuxt-src]: https://img.shields.io/badge/Nuxt-020420?logo=nuxt.js
-[nuxt-href]: https://nuxt.com
+updateFilters({ q: 'mac', category: ['laptops'] })
+```
+
+## Параметры `useL5`
+
+```ts
+interface Options<S> {
+  defaults?: Partial<InferFromL5Schema<S>>
+  syncWithRoute?: boolean
+  excludeFromSearch?: (keyof S)[]
+  apiIncludes?: string[]
+  excludeFromQueryBuilder?: (keyof S)[]
+  boolToNumber?: boolean
+  queryAliases?: Partial<Record<keyof S, string>>
+  transformInput?: (query: Partial<S>) => Partial<S>
+  transformOutput?: (filters: Filters<S>) => Record<keyof S & keyof BaseParams, unknown>
+  urlUpdateStrategy?: 'replace' | 'push'
+}
+```
+
+## Базовые параметры (BaseParams)
+
+Всегда доступны и участвуют в сборке запросов:
+
+- `page` (по умолчанию 1)
+- `limit` (по умолчанию 10)
+- `sortedBy` (по умолчанию `id`)
+- `orderBy` (по умолчанию `desc`)
+- `searchJoin` (по умолчанию `and`)
+- `searchFields` (по умолчанию `null`)
+- `search` (по умолчанию `null`)
+
+## Утилиты
+
+Модуль автоматически добавляет импорты:
+
+```ts
+import { buildQueryForApi, parseFiltersFromQuery } from '#imports'
+```
+
+- `buildQueryForApi(filters, options)` — сборка параметров для API
+- `parseFiltersFromQuery(schema, query, { defaults })` — парсинг query в фильтры
+
+## Возврат `useL5`
+
+```ts
+interface UseL5Return<S> {
+  filters: Ref<Filters<S>>
+  queryForApi: ShallowRef<Record<string, unknown>>
+  updateFilters: (newFilters: Partial<Filters<S>>, options?: { urlUpdateStrategy?: 'replace' | 'push' }) => void
+  updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>) => void
+  defaultsRef: Ref<Partial<InferFromL5Schema<S>>>
+}
+```
+
+## Лицензия
+
+MIT

@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v1.2.0
+
+[compare changes](https://github.com/merkulovka/use-l5/compare/v1.1.0...v1.2.0)
+
+### 🚀 Enhancements
+
+- Добавлен первичный readme.md файл, сгенерированный ИИ ([323af21](https://github.com/merkulovka/use-l5/commit/323af21))
+
+### ❤️ Contributors
+
+- Kirillmerkulov <kirill_tagil9@mail.ru>
+
 ## v1.1.0
 
 

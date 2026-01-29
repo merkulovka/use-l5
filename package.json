@@ -1,6 +1,6 @@
 {
     "name": "use-l5",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Nuxt-модуль с типизированным useL5-композаблом для парсинга фильтров, синхронизации с query в роуте и сборки параметров для API/URL",
     "repository": "merkulovka/use-l5",
     "license": "MIT",

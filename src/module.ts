@@ -34,13 +34,16 @@ export default defineNuxtModule<ModuleOptions>({
     // Default configuration options of the Nuxt module
     defaults: {},
     setup(_options, _nuxt) {
-        _nuxt.options.runtimeConfig.public ||= {}
-        const existing = (_nuxt.options.runtimeConfig.public.useL5
-            ?? {}) as Partial<ModuleOptions>
-        _nuxt.options.runtimeConfig.public.useL5 = {
+        const publicConfig = _nuxt.options.runtimeConfig.public ?? {}
+        const existing = (publicConfig.useL5 ?? {}) as Partial<ModuleOptions>
+        const mergedOptions = {
             ...existing,
             ..._options
-        }
+        } as ModuleOptions
+        _nuxt.options.runtimeConfig.public = {
+            ...publicConfig,
+            useL5: mergedOptions
+        } as typeof _nuxt.options.runtimeConfig.public
 
         const resolver = createResolver(import.meta.url)
 

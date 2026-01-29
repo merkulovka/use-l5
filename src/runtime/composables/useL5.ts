@@ -1,12 +1,12 @@
 import {
     shallowRef,
     ref,
-    toRef,
     useRoute,
     useRouter,
     watch,
     useRuntimeConfig
 } from '#imports'
+import type { Ref, ShallowRef } from 'vue'
 import type {
     Filters,
     InferFromL5Schema,
@@ -17,10 +17,21 @@ import { parseFiltersFromQuery } from '../utils/parseFiltersFromQuery'
 import { buildQueryForApi } from '../utils/buildQueryForApi'
 import { buildQueryForUrl } from '../utils/buildQueryForUrl'
 
+export interface UseL5Return<S extends SchemaDefinition> {
+    filters: Ref<Filters<S>>
+    queryForApi: ShallowRef<Record<string, unknown>>
+    updateFilters: (
+        newFilters: Partial<Filters<S>>,
+        _options?: Partial<Pick<Options<S>, 'urlUpdateStrategy'>>
+    ) => void
+    updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>) => void
+    defaultsRef: Ref<Partial<InferFromL5Schema<S>>>
+}
+
 export function useL5<S extends SchemaDefinition>(
     scheme: S,
     options: Options<S> = {}
-) {
+): UseL5Return<S> {
     const config = useRuntimeConfig()
     const moduleOptions = (config.public?.useL5 ?? {}) as Partial<Options<S>>
 
@@ -31,14 +42,16 @@ export function useL5<S extends SchemaDefinition>(
 
     const { syncWithRoute = false, urlUpdateStrategy = 'push' } = mergedOptions
 
-    const defaultsRef = toRef(mergedOptions.defaults ?? {})
+    const defaultsRef = ref(mergedOptions.defaults ?? {}) as Ref<
+        Partial<InferFromL5Schema<S>>
+    >
     const query = syncWithRoute ? route.query : {}
 
     const filters = ref(
         parseFiltersFromQuery(scheme, query, {
             defaults: defaultsRef.value
         })
-    )
+    ) as Ref<Filters<S>>
 
     const queryForApi = shallowRef(
         buildQueryForApi(filters.value, mergedOptions)
@@ -53,7 +66,7 @@ export function useL5<S extends SchemaDefinition>(
         } = _options
 
         for (const key in newFilters) {
-            filters.value[key] = newFilters[key]
+            (filters.value as Record<string, unknown>)[key] = newFilters[key]
         }
 
         if (!syncWithRoute) {

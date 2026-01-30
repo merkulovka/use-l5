@@ -25,7 +25,6 @@ export interface UseL5Return<S extends SchemaDefinition> {
         _options?: Partial<Pick<Options<S>, 'urlUpdateStrategy'>>
     ) => void
     updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>) => void
-    defaultsRef: Ref<Partial<InferFromL5Schema<S>>>
 }
 
 export function useL5<S extends SchemaDefinition>(
@@ -114,7 +113,6 @@ export function useL5<S extends SchemaDefinition>(
         filters,
         queryForApi,
         updateFilters,
-        updateDefaults,
-        defaultsRef
+        updateDefaults
     }
 }

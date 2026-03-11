@@ -78,8 +78,8 @@ describe('useL5', () => {
             age: null,
             page: 1,
             limit: 10,
-            sortedBy: 'id',
-            orderBy: 'desc',
+            sortedBy: 'desc',
+            orderBy: 'id',
             searchJoin: 'and',
             searchFields: null,
             search: null
@@ -88,8 +88,8 @@ describe('useL5', () => {
         expect(queryForApi.value).toEqual({
             page: 1,
             limit: 10,
-            sortedBy: 'id',
-            orderBy: 'desc',
+            sortedBy: 'desc',
+            orderBy: 'id',
             searchJoin: 'and',
             searchFields: null,
             search: 'tags:nuxt',
@@ -99,7 +99,7 @@ describe('useL5', () => {
 
     it('парсит параметры query из переданного url и строит queryForApi', () => {
         setRouteFrom(
-            'https://example.com/users?page=2&limit=5&sortedBy=created_at&orderBy=asc&searchJoin=or&searchFields=name:title&status=0&tags=tech&tags=ai&age=42'
+            'https://example.com/users?page=2&limit=5&sortedBy=asc&orderBy=created_at&searchJoin=or&searchFields=name:title&status=0&tags=tech&tags=ai&age=42'
         )
 
         const { filters, queryForApi } = useL5(schema, {
@@ -117,8 +117,8 @@ describe('useL5', () => {
             age: 42,
             page: 2,
             limit: 5,
-            sortedBy: 'created_at',
-            orderBy: 'asc',
+            sortedBy: 'asc',
+            orderBy: 'created_at',
             searchJoin: 'or',
             searchFields: 'name:title',
             search: null
@@ -127,8 +127,8 @@ describe('useL5', () => {
         expect(queryForApi.value).toEqual({
             page: 2,
             limit: 5,
-            sortedBy: 'created_at',
-            orderBy: 'asc',
+            sortedBy: 'asc',
+            orderBy: 'created_at',
             searchJoin: 'or',
             searchFields: 'name:title',
             search: 'tags:tech,ai;age:42',
@@ -153,8 +153,8 @@ describe('useL5', () => {
             tags: ['nuxt', 'ai'],
             age: 30,
             page: 3,
-            sortedBy: 'created_at',
-            orderBy: 'asc',
+            sortedBy: 'asc',
+            orderBy: 'created_at',
             searchJoin: 'or',
             searchFields: 'name:title'
         })
@@ -165,8 +165,8 @@ describe('useL5', () => {
             age: 30,
             page: 3,
             limit: 10,
-            sortedBy: 'created_at',
-            orderBy: 'asc',
+            sortedBy: 'asc',
+            orderBy: 'created_at',
             searchJoin: 'or',
             searchFields: 'name:title',
             search: null
@@ -175,8 +175,8 @@ describe('useL5', () => {
         expect(queryForApi.value).toEqual({
             page: 3,
             limit: 10,
-            sortedBy: 'created_at',
-            orderBy: 'asc',
+            sortedBy: 'asc',
+            orderBy: 'created_at',
             searchJoin: 'or',
             searchFields: 'name:title',
             search: 'tags:nuxt,ai;age:30',

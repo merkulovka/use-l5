@@ -3,8 +3,8 @@ import type { BaseParams, L5Node } from '../types'
 export const BASE_PARAMS_DEFAULTS: BaseParams = {
     page: 1,
     limit: 10,
-    sortedBy: 'id',
-    orderBy: 'desc',
+    sortedBy: 'desc',
+    orderBy: 'id',
     searchJoin: 'and',
     searchFields: null,
     search: null

@@ -51,6 +51,7 @@ const { filters, queryForApi, updateFilters } = useL5(
     },
     {
         defaults: {
+            limit: 2,
             age: 25,
             skills: ['html', 'css']
         }

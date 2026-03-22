@@ -71,7 +71,7 @@ interface Options<S> {
   excludeFromQueryBuilder?: (keyof S)[]
   boolToNumber?: boolean
   queryAliases?: Partial<Record<keyof S, string>>
-  transformOutput?: (filters: Filters<S>) => Record<keyof S & keyof BaseParams, unknown>
+  transformOutput?: (filters: Filters<S>) => Record<string, unknown>
   urlUpdateStrategy?: 'replace' | 'push'
 }
 ```
@@ -106,9 +106,15 @@ interface UseL5Return<S> {
   filters: Ref<Filters<S>>
   queryForApi: ShallowRef<Record<string, unknown>>
   updateFilters: (newFilters: Partial<Filters<S>>, options?: { urlUpdateStrategy?: 'replace' | 'push' }) => void
-  updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>, options?: { recomputeFilters?: boolean }) => void
+  updateDefaults: (newDefaults: Partial<Filters<S>>, options?: { recomputeFilters?: boolean }) => void
 }
 ```
+
+## Поведение синхронизации
+
+- При `syncWithRoute: false` `updateFilters()` сразу обновляет локальные `filters` и `queryForApi`.
+- При `syncWithRoute: true` `updateFilters()` также сразу обновляет `queryForApi`, а затем синхронизирует состояние с URL через `router.push()` или `router.replace()`.
+- `updateDefaults(newDefaults, { recomputeFilters: true })` пересчитывает локальные `filters` и `queryForApi`, но сам по себе не обновляет URL.
 
 ## Лицензия
 

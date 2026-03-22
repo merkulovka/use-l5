@@ -64,7 +64,7 @@ updateFilters({ q: 'mac', category: ['laptops'] })
 
 ```ts
 interface Options<S> {
-  defaults?: Partial<InferFromL5Schema<S>>
+  defaults?: Partial<Filters<S>>
   syncWithRoute?: boolean
   excludeFromSearch?: (keyof S)[]
   apiIncludes?: string[]
@@ -82,8 +82,8 @@ interface Options<S> {
 
 - `page` (по умолчанию 1)
 - `limit` (по умолчанию 10)
-- `sortedBy` (по умолчанию `id`)
-- `orderBy` (по умолчанию `desc`)
+- `sortedBy` (по умолчанию `desc`)
+- `orderBy` (по умолчанию `id`)
 - `searchJoin` (по умолчанию `and`)
 - `searchFields` (по умолчанию `null`)
 - `search` (по умолчанию `null`)
@@ -107,7 +107,6 @@ interface UseL5Return<S> {
   queryForApi: ShallowRef<Record<string, unknown>>
   updateFilters: (newFilters: Partial<Filters<S>>, options?: { urlUpdateStrategy?: 'replace' | 'push' }) => void
   updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>, options?: { recomputeFilters?: boolean }) => void
-  defaultsRef: Ref<Partial<InferFromL5Schema<S>>>
 }
 ```
 

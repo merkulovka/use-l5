@@ -32,8 +32,10 @@ describe('parseValueFromQuery', () => {
 
     it('[Number]', () => {
         expect(parseValueFromQuery('1', [Number])).toEqual([1])
+        expect(parseValueFromQuery('0', [Number])).toEqual([0])
         expect(parseValueFromQuery('kirill', [Number])).toEqual([])
         expect(parseValueFromQuery(['10', '101'], [Number])).toEqual([10, 101])
+        expect(parseValueFromQuery(['0', '10', 'bags', '101'], [Number])).toEqual([0, 10, 101])
         expect(parseValueFromQuery(['10', 'bags', '101'], [Number])).toEqual([10, 101])
         expect(parseValueFromQuery('', [Number])).toEqual([])
     })

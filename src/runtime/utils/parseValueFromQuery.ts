@@ -25,7 +25,7 @@ export function parseValueFromQuery(value: LocationQueryValue | LocationQueryVal
                 return asArray(value).map((i) => {
                     i = Number(i)
                     return Number.isNaN(i) ? null : i
-                }).filter(i => i)
+                }).filter(i => i !== null)
             }
             if (!value) return null
             value = Number(value)

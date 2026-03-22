@@ -9,7 +9,6 @@ import {
 import type { Ref, ShallowRef } from 'vue'
 import type {
     Filters,
-    InferFromL5Schema,
     Options,
     SchemaDefinition
 } from '../types'
@@ -25,7 +24,7 @@ export interface UseL5Return<S extends SchemaDefinition> {
         _options?: Partial<Pick<Options<S>, 'urlUpdateStrategy'>>
     ) => void
     updateDefaults: (
-        newDefaults: Partial<InferFromL5Schema<S>>,
+        newDefaults: Partial<Filters<S>>,
         options?: { recomputeFilters?: boolean }
     ) => void
 }
@@ -45,7 +44,7 @@ export function useL5<S extends SchemaDefinition>(
     const { syncWithRoute = false, urlUpdateStrategy = 'push' } = mergedOptions
 
     const defaultsRef = ref(mergedOptions.defaults ?? {}) as Ref<
-        Partial<InferFromL5Schema<S>>
+        Partial<Filters<S>>
     >
     const query = syncWithRoute ? route.query : {}
 
@@ -88,7 +87,7 @@ export function useL5<S extends SchemaDefinition>(
     }
 
     function updateDefaults(
-        newDefaults: Partial<InferFromL5Schema<S>>,
+        newDefaults: Partial<Filters<S>>,
         options: { recomputeFilters?: boolean } = {}
     ) {
         defaultsRef.value = {

@@ -1,6 +1,6 @@
 {
     "name": "use-l5",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Nuxt-модуль с типизированным useL5-композаблом для парсинга фильтров, синхронизации с query в роуте и сборки параметров для API/URL",
     "author": {
         "name": "Kirill Merkulov",

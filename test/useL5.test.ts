@@ -137,7 +137,7 @@ describe('useL5', () => {
         })
     })
 
-    it('updateFilters обновляет filters/queryForApi и синхронизирует маршрут при включении', () => {
+    it('updateFilters обновляет filters и queryForApi без синхронизации с маршрутом', () => {
         setRouteFrom('https://example.com/users')
 
         const { filters, queryForApi, updateFilters } = useL5(schema, {
@@ -182,6 +182,81 @@ describe('useL5', () => {
             search: 'tags:nuxt,ai;age:30',
             status: true
         })
+    })
+
+    it('updateFilters при syncWithRoute вызывает router.push и сразу обновляет queryForApi', () => {
+        setRouteFrom('https://example.com/users')
+
+        const { filters, queryForApi, updateFilters } = useL5(schema, {
+            syncWithRoute: true,
+            defaults: {
+                status: false,
+                tags: ['nuxt']
+            },
+            excludeFromSearch: ['status']
+        })
+
+        updateFilters({
+            status: true,
+            tags: ['nuxt', 'ai'],
+            age: 30,
+            page: 3
+        })
+
+        expect(filters.value).toEqual({
+            status: true,
+            tags: ['nuxt', 'ai'],
+            age: 30,
+            page: 3,
+            limit: 10,
+            sortedBy: 'desc',
+            orderBy: 'id',
+            searchJoin: 'and',
+            searchFields: null,
+            search: null
+        })
+
+        expect(queryForApi.value).toEqual({
+            page: 3,
+            limit: 10,
+            sortedBy: 'desc',
+            orderBy: 'id',
+            searchJoin: 'and',
+            searchFields: null,
+            search: 'tags:nuxt,ai;age:30',
+            status: true
+        })
+
+        expect(routerPush).toHaveBeenCalledWith({
+            query: {
+                status: true,
+                tags: ['nuxt', 'ai'],
+                age: 30,
+                page: 3
+            }
+        })
+        expect(routerReplace).not.toHaveBeenCalled()
+    })
+
+    it('updateFilters поддерживает router.replace через urlUpdateStrategy', () => {
+        setRouteFrom('https://example.com/users')
+
+        const { updateFilters } = useL5(schema, {
+            syncWithRoute: true
+        })
+
+        updateFilters({
+            age: 18
+        }, {
+            urlUpdateStrategy: 'replace'
+        })
+
+        expect(routerReplace).toHaveBeenCalledWith({
+            query: {
+                age: 18
+            }
+        })
+        expect(routerPush).not.toHaveBeenCalled()
     })
 
     it('updateDefaults с recomputeFilters пересчитывает filters и queryForApi', () => {

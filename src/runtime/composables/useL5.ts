@@ -24,7 +24,10 @@ export interface UseL5Return<S extends SchemaDefinition> {
         newFilters: Partial<Filters<S>>,
         _options?: Partial<Pick<Options<S>, 'urlUpdateStrategy'>>
     ) => void
-    updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>) => void
+    updateDefaults: (
+        newDefaults: Partial<InferFromL5Schema<S>>,
+        options?: { recomputeFilters?: boolean }
+    ) => void
 }
 
 export function useL5<S extends SchemaDefinition>(
@@ -83,11 +86,22 @@ export function useL5<S extends SchemaDefinition>(
         method.call(router, { query })
     }
 
-    function updateDefaults(newDefaults: Partial<InferFromL5Schema<S>>) {
+    function updateDefaults(
+        newDefaults: Partial<InferFromL5Schema<S>>,
+        options: { recomputeFilters?: boolean } = {}
+    ) {
         defaultsRef.value = {
             ...defaultsRef.value,
             ...newDefaults
         }
+
+        if (!options.recomputeFilters) return
+
+        const nextQuery = syncWithRoute ? route.query : {}
+        filters.value = parseFiltersFromQuery(scheme, nextQuery, {
+            defaults: defaultsRef.value
+        })
+        queryForApi.value = buildQueryForApi(filters.value, mergedOptions)
     }
 
     function startWatchingForRoute() {

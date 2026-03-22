@@ -106,7 +106,7 @@ interface UseL5Return<S> {
   filters: Ref<Filters<S>>
   queryForApi: ShallowRef<Record<string, unknown>>
   updateFilters: (newFilters: Partial<Filters<S>>, options?: { urlUpdateStrategy?: 'replace' | 'push' }) => void
-  updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>) => void
+  updateDefaults: (newDefaults: Partial<InferFromL5Schema<S>>, options?: { recomputeFilters?: boolean }) => void
   defaultsRef: Ref<Partial<InferFromL5Schema<S>>>
 }
 ```

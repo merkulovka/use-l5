@@ -183,4 +183,48 @@ describe('useL5', () => {
             status: true
         })
     })
+
+    it('updateDefaults с recomputeFilters пересчитывает filters и queryForApi', () => {
+        setRouteFrom('https://example.com/users')
+
+        const { filters, queryForApi, updateDefaults } = useL5(schema, {
+            defaults: {
+                status: false,
+                tags: ['nuxt']
+            },
+            excludeFromSearch: ['status']
+        })
+
+        updateDefaults({
+            status: true,
+            age: 18,
+            tags: ['nuxt', 'vue']
+        }, {
+            recomputeFilters: true
+        })
+
+        expect(filters.value).toEqual({
+            status: true,
+            tags: ['nuxt', 'vue'],
+            age: 18,
+            page: 1,
+            limit: 10,
+            sortedBy: 'desc',
+            orderBy: 'id',
+            searchJoin: 'and',
+            searchFields: null,
+            search: null
+        })
+
+        expect(queryForApi.value).toEqual({
+            page: 1,
+            limit: 10,
+            sortedBy: 'desc',
+            orderBy: 'id',
+            searchJoin: 'and',
+            searchFields: null,
+            search: 'tags:nuxt,vue;age:18',
+            status: true
+        })
+    })
 })

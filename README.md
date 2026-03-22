@@ -71,7 +71,6 @@ interface Options<S> {
   excludeFromQueryBuilder?: (keyof S)[]
   boolToNumber?: boolean
   queryAliases?: Partial<Record<keyof S, string>>
-  transformInput?: (query: Partial<S>) => Partial<S>
   transformOutput?: (filters: Filters<S>) => Record<keyof S & keyof BaseParams, unknown>
   urlUpdateStrategy?: 'replace' | 'push'
 }

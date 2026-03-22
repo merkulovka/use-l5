@@ -12,6 +12,7 @@ export function buildQueryForUrl<S extends SchemaDefinition>(filters: Filters<S>
     return Object.entries(filters)
         .filter(([key, value]) => {
             if (value === null || value === undefined) return false
+            if (Array.isArray(value) && value.length === 0) return false
 
             const defaultValue = defaults[key as keyof typeof defaults]
 

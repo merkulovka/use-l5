@@ -253,6 +253,7 @@ describe('useL5', () => {
 
         expect(routerReplace).toHaveBeenCalledWith({
             query: {
+                status: false,
                 age: 18
             }
         })

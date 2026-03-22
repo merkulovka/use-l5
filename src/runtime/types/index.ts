@@ -37,7 +37,7 @@ export interface Options<S extends SchemaDefinition> {
     queryAliases?: Partial<Record<keyof S, string>>
     transformOutput?: (
         filters: Filters<S>
-    ) => Record<keyof S & keyof BaseParams, unknown>
+    ) => Record<string, unknown>
     urlUpdateStrategy?: 'replace' | 'push'
 }
 

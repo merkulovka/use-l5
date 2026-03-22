@@ -1,6 +1,5 @@
 import type { Filters, SchemaDefinition, Options } from '../types'
 import { BASE_PARAMS_DEFAULTS } from '../constant/baseParams.const'
-import { pick } from 'es-toolkit'
 
 const BASE_PARAMS_KEYS = Object.keys(BASE_PARAMS_DEFAULTS)
 
@@ -8,8 +7,6 @@ export function buildQueryForApi<S extends SchemaDefinition>(
     _filters: Filters<S>,
     options: Options<S>
 ) {
-    let filters: Record<string, unknown> = { ..._filters }
-    const result: Record<string, unknown> = pick(filters, BASE_PARAMS_KEYS)
     const {
         excludeFromSearch = [],
         apiIncludes = [],
@@ -17,12 +14,15 @@ export function buildQueryForApi<S extends SchemaDefinition>(
         queryAliases,
         transformOutput
     } = options
+    const filters: Record<string, unknown> = transformOutput
+        ? transformOutput(_filters)
+        : { ..._filters }
+    const result: Record<string, unknown> = {}
+    const rootKeys = [...BASE_PARAMS_KEYS, ...excludeFromSearch]
 
-    if (transformOutput) {
-        filters = transformOutput(_filters)
+    function getAlias(key: string) {
+        return queryAliases?.[key] ?? key
     }
-
-    const allExcludeKeys = [...BASE_PARAMS_KEYS, ...excludeFromSearch]
 
     if (options.boolToNumber) {
         Object.entries(filters).forEach(([key, value]) => {
@@ -32,9 +32,8 @@ export function buildQueryForApi<S extends SchemaDefinition>(
         })
     }
 
-    allExcludeKeys.forEach((key) => {
-        const alias = queryAliases?.[key] ?? key
-        result[alias as string] = filters[key as string]
+    rootKeys.forEach((key) => {
+        result[getAlias(key)] = filters[key]
     })
 
     result.search = Object.entries(filters)
@@ -48,8 +47,7 @@ export function buildQueryForApi<S extends SchemaDefinition>(
             return value !== null
         })
         .map(([key, value]) => {
-            const alias = queryAliases?.[key] ?? key
-            return `${alias}:${Array.isArray(value) ? value.join(',') : value}`
+            return `${getAlias(key)}:${Array.isArray(value) ? value.join(',') : value}`
         })
         .join(';')
 
